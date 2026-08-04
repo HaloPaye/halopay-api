@@ -40,8 +40,9 @@ export class SEP12KYCService {
     if (files) {
       const fileList = Array.isArray(files) ? files : Object.values(files).flat();
       for (const file of fileList) {
-        if (!file.mimetype.startsWith('image/')) {
-          throw new AppError(400, 'INVALID_FILE_TYPE', `File ${file.originalname} must be an image (JPEG, PNG, WEBP)`);
+        const validMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!validMimeTypes.includes(file.mimetype)) {
+          throw new AppError(400, 'INVALID_FILE_TYPE', `File ${file.originalname} must be a JPEG, PNG, or WEBP image`);
         }
         if (file.size > 10 * 1024 * 1024) {
           throw new AppError(400, 'FILE_TOO_LARGE', `File ${file.originalname} exceeds maximum size limit of 10MB`);

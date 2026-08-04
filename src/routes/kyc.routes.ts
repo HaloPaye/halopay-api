@@ -2,6 +2,27 @@ import { Router, Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import { SEP12KYCService, MultipartFile } from '../services/sep12.service.js';
 import { SEP12CustomerPayload } from '../types/sep.js';
+import { validate } from '../middleware/validate.middleware.js';
+import { z } from 'zod';
+
+const putCustomerSchema = z.object({
+  body: z.object({
+    account: z.string().min(1, 'Account is required'),
+    first_name: z.string().min(1, 'First name is required'),
+    last_name: z.string().min(1, 'Last name is required'),
+    email_address: z.string().email('Invalid email address'),
+    phone_number: z.string().min(1, 'Phone number is required'),
+    id_type: z.string().optional(),
+    id_country_code: z.string().optional(),
+    id_number: z.string().min(1, 'ID number is required'),
+  })
+});
+
+const getCustomerSchema = z.object({
+  query: z.object({
+    account: z.string().min(1, 'Account is required'),
+  })
+});
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -24,6 +45,7 @@ export function createKYCRouter(kycService: SEP12KYCService): Router {
       { name: 'id_photo_back', maxCount: 1 },
       { name: 'photo_proof_residence', maxCount: 1 }
     ]),
+    validate(putCustomerSchema),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const authHeader = req.headers.authorization;
@@ -54,7 +76,7 @@ export function createKYCRouter(kycService: SEP12KYCService): Router {
    * GET /api/v1/kyc/customer
    * Queries merchant KYC status from the anchor.
    */
-  router.get('/customer', async (req: Request, res: Response, next: NextFunction) => {
+  router.get('/customer', validate(getCustomerSchema), async (req: Request, res: Response, next: NextFunction) => {
     try {
       const authHeader = req.headers.authorization;
       const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : '';
