@@ -61,4 +61,40 @@ describe('SEP-12 KYC Ingestion & Binary Photo Handling', () => {
       .rejects
       .toThrow(AppError);
   });
+
+  it('should reject file uploads exceeding 10MB with 400 AppError', async () => {
+    const payload: SEP12CustomerPayload = {
+      account: 'GAKL9012345678901234567890123456789012345678901234567890',
+      first_name: 'Jean',
+      last_name: 'Pierre',
+      email_address: 'jean@halopay.io',
+      phone_number: '+50937000000',
+      id_type: 'id_card',
+      id_country_code: 'HTI',
+      id_number: 'HTI-987654321'
+    };
+
+    const largeFile: MultipartFile = {
+      fieldname: 'id_photo_front',
+      originalname: 'large_image.jpg',
+      encoding: '7bit',
+      mimetype: 'image/jpeg',
+      buffer: Buffer.from('fake-data'),
+      size: 11 * 1024 * 1024
+    };
+
+    await expect(kycService.submitCustomerKYC('valid-jwt-token', payload, [largeFile]))
+      .rejects
+      .toThrow(AppError);
+  });
+
+  it('should reject missing required fields with 400 AppError', async () => {
+    const payload: Partial<SEP12CustomerPayload> = {
+      account: 'GAKL9012345678901234567890123456789012345678901234567890',
+    };
+
+    await expect(kycService.submitCustomerKYC('valid-jwt-token', payload as SEP12CustomerPayload))
+      .rejects
+      .toThrow(AppError);
+  });
 });
