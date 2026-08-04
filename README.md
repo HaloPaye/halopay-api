@@ -8,16 +8,26 @@
 
 ---
 
-## 🌟 Core Architecture
+## Core Architecture
 
 1. **SEP-10 Web Authentication**: Standardized Stellar challenge-response flow issuing JWTs for secure merchant interactions.
 2. **SEP-12 KYC Ingestion**: Ingests merchant verification fields and binary government ID photos (`multipart/form-data`) to transmit to Stellar anchors (e.g. MoneyGram).
 3. **SEP-24 Fiat Off-Ramp Orchestration**: Programmatically converts aggregated USDC daily sales into local fiat via anchor off-ramp quotes and withdrawals.
 4. **On-Chain Webhook & WebSocket Broadcaster**: Listens to Stellar Horizon payment streams for incoming USDC aid payments and broadcasts instant payment confirmations to merchant POS devices over WebSockets.
 
+### Architecture Diagram
+
+```mermaid
+graph TD
+  Client[HaloPay POS Client] -->|SEP-10 Auth| API[HaloPay API]
+  API -->|KYC & Settlement| Anchor[Stellar Anchor / MoneyGram]
+  Horizon[Stellar Horizon] -->|Webhook| API
+  API -->|WebSocket| Client
+```
+
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Language**: TypeScript (Node.js 20+)
 - **Framework**: Express.js
@@ -28,7 +38,7 @@
 
 ---
 
-## 🚀 Quick Start
+## Setup & Quick Start
 
 ```bash
 # Clone the repository
@@ -45,16 +55,25 @@ npm run dev
 npm test
 ```
 
+## Environment Variables
+
+| Variable | Description | Default |
+| :--- | :--- | :--- |
+| `ANCHOR_URL` | Anchor URL for SEP-24 | `https://anchor.moneygram.com` |
+| `ANCHOR_DOMAIN` | Domain for SEP-10 | `anchor.moneygram.com` |
+| `JWT_SECRET` | Secret key for JWT | `halopay-default-secret-key-change-in-prod` |
+
 ---
 
-## 👥 Maintainers & Contact
+## Maintainers & Contact
 
 | Maintainer | Contact / Telegram | Role |
 | :--- | :--- | :--- |
 | HaloPay Team | [@HaloPayDev](https://t.me/HaloPayDev) | Core Protocol Engineering |
+| Lead Engineer | security@halopay.io | Security & Operations |
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
