@@ -72,6 +72,10 @@ npm test
 | HaloPay Team | [@HaloPayDev](https://t.me/HaloPayDev) | Core Protocol Engineering |
 | Lead Engineer | security@halopay.io | Security & Operations |
 
+## Contributors
+
+[![Contributors](https://contrib.rocks/image?repo=HaloPaye/halopay-api)](https://github.com/HaloPaye/halopay-api/graphs/contributors)
+
 ---
 
 ## License
