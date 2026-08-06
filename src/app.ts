@@ -1,5 +1,8 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import hpp from 'hpp';
 import { errorHandler } from './middleware/error.middleware.js';
 import { SEP10AuthService } from './services/sep10.service.js';
 import { SEP12KYCService } from './services/sep12.service.js';
@@ -11,9 +14,22 @@ import { createSettlementRouter } from './routes/settlement.routes.js';
 export function createApp(): Express {
   const app = express();
 
+  // Security Middleware
+  app.use(helmet());
   app.use(cors());
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+
+  // Rate Limiting (100 requests per 15 minutes per IP)
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: { error: { code: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests from this IP, please try again later.' } }
+  });
+  app.use('/api/', limiter);
+
+  // Payload Limits & HTTP Parameter Pollution protection
+  app.use(express.json({ limit: '1mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+  app.use(hpp());
 
   // Instantiate services
   const authService = new SEP10AuthService();

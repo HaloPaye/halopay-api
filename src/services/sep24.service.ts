@@ -45,17 +45,37 @@ export class SEP24SettlementService {
       throw new AppError(401, 'UNAUTHORIZED', 'Authentication token required for SEP-24 withdrawal');
     }
 
-    if (!request.account || !request.amount) {
-      throw new AppError(400, 'MISSING_WITHDRAWAL_PARAMS', 'Account and amount are required fields');
+    if (!request.account || !request.amount || !request.asset_code) {
+      throw new AppError(400, 'MISSING_WITHDRAWAL_PARAMS', 'Account, asset_code and amount are required fields');
     }
 
     const transactionId = `tx_sep24_${Date.now()}`;
-    const interactiveUrl = `${this.anchorUrl}/sep24/interactive/withdraw?transaction_id=${transactionId}&account=${request.account}&amount=${request.amount}`;
+    const baseUrl = process.env.API_BASE_URL || 'http://localhost:4000';
+    const callbackUrl = encodeURIComponent(`${baseUrl}/api/v1/settlement/webhook/sep24`);
+    
+    // Compliant SEP-24 Interactive URL formatting for MoneyGram
+    const interactiveUrl = `${this.anchorUrl}/sep24/transactions/withdraw/interactive?transaction_id=${transactionId}&asset_code=${request.asset_code}&account=${request.account}&amount=${request.amount}&callback=${callbackUrl}`;
+
+    console.log(`[SEP-24] Initiated interactive withdrawal. TxID: ${transactionId}`);
 
     return {
       type: 'interactive_customer_info_needed',
       url: interactiveUrl,
       id: transactionId
     };
+  }
+
+  public async processWebhook(payload: any): Promise<{ status: string }> {
+    if (!payload || !payload.transaction || !payload.transaction.id) {
+      throw new AppError(400, 'INVALID_WEBHOOK_PAYLOAD', 'Transaction ID is required in webhook payload');
+    }
+
+    const txId = payload.transaction.id;
+    const status = payload.transaction.status;
+
+    console.log(`[SEP-24 Webhook] Received status update for TxID ${txId}: ${status}`);
+
+    // Here we would normally update the database and notify the frontend via WebSockets
+    return { status: 'acknowledged' };
   }
 }

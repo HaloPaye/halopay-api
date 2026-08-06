@@ -32,8 +32,11 @@ describe('Horizon Payment Listener & WebSocket Broadcaster', () => {
     expect(event.asset_code).toBe('USDC');
   });
 
-  it('should toggle Horizon stream listener status correctly', () => {
+  it('should toggle Horizon stream listener status correctly and avoid double starting', () => {
     expect(listener.getStatus()).toBe(false);
+    listener.startListening('GAMERCHANT_PUBKEY');
+    expect(listener.getStatus()).toBe(true);
+    // calling it twice to hit coverage on already listening early return
     listener.startListening('GAMERCHANT_PUBKEY');
     expect(listener.getStatus()).toBe(true);
     listener.stopListening();

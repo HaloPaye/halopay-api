@@ -23,7 +23,7 @@ describe('SEP-24 Settlement Service', () => {
     expect(result.quote.expires_at).toBeDefined();
   });
 
-  it('should generate interactive withdrawal URL', async () => {
+  it('should generate interactive withdrawal URL with callback', async () => {
     const req: SEP24WithdrawalRequest = {
       asset_code: 'USDC',
       account: 'GAKL9012345678901234567890123456789012345678901234567890',
@@ -34,10 +34,33 @@ describe('SEP-24 Settlement Service', () => {
     expect(result.type).toBe('interactive_customer_info_needed');
     expect(result.url).toContain('amount=99.00');
     expect(result.url).toContain('account=GAKL');
+    expect(result.url).toContain('callback=');
+    expect(result.url).toContain('asset_code=USDC');
+    expect(result.url).toContain('transactions/withdraw/interactive');
   });
 
   it('should throw unauthorized without token', async () => {
     const req = {} as SEP24QuoteRequest;
     await expect(sep24Service.getOffRampQuote('', req)).rejects.toThrow(AppError);
+  });
+
+  it('should process webhook status updates successfully', async () => {
+    const payload = {
+      transaction: {
+        id: 'tx_sep24_12345',
+        status: 'completed'
+      }
+    };
+    const result = await sep24Service.processWebhook(payload);
+    expect(result.status).toBe('acknowledged');
+  });
+
+  it('should reject webhook without transaction ID', async () => {
+    const payload = {
+      transaction: {
+        status: 'completed'
+      }
+    };
+    await expect(sep24Service.processWebhook(payload)).rejects.toThrow(AppError);
   });
 });

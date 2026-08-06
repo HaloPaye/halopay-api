@@ -97,4 +97,23 @@ describe('SEP-12 KYC Ingestion & Binary Photo Handling', () => {
       .rejects
       .toThrow(AppError);
   });
+
+  it('should reject submitCustomerKYC without token', async () => {
+    const payload = {} as SEP12CustomerPayload;
+    await expect(kycService.submitCustomerKYC('', payload)).rejects.toThrow(AppError);
+  });
+
+  it('should get customer status', async () => {
+    const result = await kycService.getCustomerStatus('valid-token', 'GAKL901234567890');
+    expect(result.id).toBeDefined();
+    expect(result.status).toBe('ACCEPTED');
+  });
+
+  it('should reject getCustomerStatus without token', async () => {
+    await expect(kycService.getCustomerStatus('', 'GAKL901234567890')).rejects.toThrow(AppError);
+  });
+
+  it('should reject getCustomerStatus without account', async () => {
+    await expect(kycService.getCustomerStatus('valid-token', '')).rejects.toThrow(AppError);
+  });
 });

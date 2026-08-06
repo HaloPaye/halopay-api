@@ -57,5 +57,18 @@ export function createSettlementRouter(settlementService: SEP24SettlementService
     }
   });
 
+  /**
+   * POST /api/v1/settlement/webhook/sep24
+   * Receives asynchronous status updates from the anchor regarding SEP-24 transactions.
+   */
+  router.post('/webhook/sep24', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await settlementService.processWebhook(req.body);
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  });
+
   return router;
 }
