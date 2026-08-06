@@ -20,7 +20,7 @@ export class PaymentWebSocketBroadcaster {
         console.log('[WebSocket] Merchant POS client disconnected. Remaining clients:', this.clients.size);
       });
 
-      ws.on('error', (error) => {
+      ws.on('error', (error: Error) => {
         console.error('[WebSocket] Error on client connection:', error);
       });
     });
