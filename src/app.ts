@@ -44,99 +44,131 @@ export function createApp(): Express {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>HaloPay API Settlement Engine</title>
+        <title>HaloPay Settlement API</title>
         <style>
           body {
             margin: 0;
-            padding: 0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: #020617;
-            color: #f8fafc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            padding: 2rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            background-color: #0f172a;
+            color: #cbd5e1;
+            line-height: 1.6;
           }
           .container {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 3rem;
-            border-radius: 1.5rem;
-            text-align: center;
-            max-width: 600px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
+            margin: 0 auto;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
           }
           h1 {
+            color: #f8fafc;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1rem;
             margin-top: 0;
-            font-size: 2rem;
-            background: linear-gradient(to right, #60a5fa, #34d399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-          }
-          p {
-            color: #94a3b8;
-            line-height: 1.6;
-            margin-bottom: 2rem;
-          }
-          .links {
-            display: grid;
-            gap: 1rem;
-            grid-template-columns: 1fr 1fr;
-          }
-          a {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #e2e8f0;
-            text-decoration: none;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            transition: all 0.2s ease;
-            font-weight: 600;
-          }
-          a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #3b82f6;
-            transform: translateY(-2px);
-          }
-          .status {
-            margin-top: 2rem;
-            font-size: 0.875rem;
-            color: #10b981;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            gap: 12px;
           }
-          .dot {
-            width: 8px;
-            height: 8px;
+          .badge {
             background-color: #10b981;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #10b981;
-            animation: pulse 2s infinite;
+            color: #064e3b;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
           }
-          @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+          h2 {
+            color: #e2e8f0;
+            margin-top: 2.5rem;
+            font-size: 1.25rem;
+          }
+          .endpoint {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+          }
+          .endpoint.ws {
+            border-left-color: #8b5cf6;
+          }
+          .method {
+            font-weight: bold;
+            color: #3b82f6;
+            margin-right: 0.5rem;
+          }
+          .method.get { color: #10b981; }
+          .method.post { color: #f59e0b; }
+          .method.ws { color: #8b5cf6; }
+          .path {
+            color: #f8fafc;
+            font-weight: 600;
+          }
+          .desc {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+          }
+          .footer-links {
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid #334155;
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+          }
+          a {
+            color: #38bdf8;
+            text-decoration: none;
+          }
+          a:hover {
+            text-decoration: underline;
           }
         </style>
       </head>
       <body>
         <div class="container">
-          <h1>HaloPay API</h1>
-          <p>The secure Settlement Engine bridging offline merchants with the Stellar ecosystem. Handles SEP-10 Authentication, SEP-12 KYC routing, and SEP-24 Fiat Off-Ramping.</p>
-          <div class="links">
-            <a href="/health">System Health</a>
-            <a href="https://halopay-docs.vercel.app/" target="_blank">Documentation</a>
-            <a href="https://pos.halopaye.com" target="_blank">Merchant POS</a>
-            <a href="https://github.com/HaloPaye/halopay-api" target="_blank">GitHub Source</a>
+          <h1>HaloPay Settlement API <span class="badge">Online</span></h1>
+          <p>This is the backend settlement engine for the HaloPay Protocol. It acts as the bridge between the offline-first Merchant POS and the Stellar network, handling authentication, KYC ingestion, and automated fiat off-ramping.</p>
+          
+          <h2>REST Endpoints</h2>
+          
+          <div class="endpoint">
+            <div><span class="method get">GET</span> <span class="path">/health</span></div>
+            <div class="desc">System health check and version verification.</div>
           </div>
-          <div class="status">
-            <div class="dot"></div>
-            Engine Online
+
+          <div class="endpoint">
+            <div><span class="method get">GET</span> <span class="path">/api/v1/auth/</span></div>
+            <div class="desc">SEP-10 Stellar Authentication. Initiates the challenge/response flow for merchant wallets to authenticate securely with the backend.</div>
+          </div>
+
+          <div class="endpoint">
+            <div><span class="method post">POST</span> <span class="path">/api/v1/kyc/customer</span></div>
+            <div class="desc">SEP-12 KYC Ingestion. Accepts multipart/form-data for merchant government ID and photo uploads (up to 10MB limit), securely routing them to the MoneyGram anchor.</div>
+          </div>
+
+          <div class="endpoint">
+            <div><span class="method post">POST</span> <span class="path">/api/v1/settlement/withdraw</span></div>
+            <div class="desc">SEP-24 Fiat Off-Ramp Orchestration. Triggers the interactive withdrawal process to convert aggregated merchant USDC balances into local fiat.</div>
+          </div>
+
+          <h2>WebSocket Endpoints</h2>
+
+          <div class="endpoint ws">
+            <div><span class="method ws">WS</span> <span class="path">/ws/payments</span></div>
+            <div class="desc">Persistent Horizon listener. Broadcasts incoming on-chain Stellar payments to connected POS terminals in real-time.</div>
+          </div>
+
+          <div class="footer-links">
+            <a href="https://halopay-docs.vercel.app/" target="_blank">Documentation Site &rarr;</a>
+            <a href="https://halopay-pos.vercel.app/" target="_blank">Launch POS Terminal &rarr;</a>
           </div>
         </div>
       </body>
