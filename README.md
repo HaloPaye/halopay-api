@@ -1,9 +1,15 @@
-# HaloPay API (The Settlement Backend)
+<!-- Optional: replace with a banner image. Keep it plain — a wordmark, not a stock illustration. -->
+<h1 align="center">HaloPay API</h1>
 
-[![CI/CD](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/HaloPaye/halopay-api)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  The dedicated settlement backend for HaloPay — a self-custodied Point-of-Sale and merchant settlement protocol built for crisis zones and offline environments where traditional digital banking infrastructure does not exist.
+</p>
 
-**HaloPay API** is the dedicated settlement backend for HaloPay — a self-custodied Point-of-Sale and merchant settlement protocol built for crisis zones and offline environments where traditional digital banking infrastructure does not exist.
+<p align="center">
+  <a href="https://github.com/HaloPaye/halopay-api/actions"><img alt="CI/CD" src="https://img.shields.io/badge/build-passing-brightgreen"></a>
+  <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg">
+  <img alt="Stellar SDK" src="https://img.shields.io/badge/stellar--sdk-latest-purple">
+</p>
 
 ---
 
