@@ -69,16 +69,6 @@ npm run dev
 npm test
 ```
 
-## Environment Variables
-
-| Variable | Description | Default |
-| :--- | :--- | :--- |
-| `ANCHOR_URL` | Anchor URL for SEP-24 | `https://anchor.moneygram.com` |
-| `ANCHOR_DOMAIN` | Domain for SEP-10 | `anchor.moneygram.com` |
-| `JWT_SECRET` | Secret key for JWT | `halopay-default-secret-key-change-in-prod` |
-
----
-
 ## Maintainers & Contact
 
 | Maintainer | Contact / Telegram | Role |
