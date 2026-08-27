@@ -13,6 +13,7 @@
     "pg": "^8.12.0"
   },
   "devDependencies": {
+    "typedoc": "^0.28.20",
     "typescript": "^5.5.4"
   }
 }
