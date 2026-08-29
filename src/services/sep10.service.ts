@@ -43,6 +43,7 @@ export class SEP10AuthService {
         network_passphrase: this.networkPassphrase
       };
     } catch (err: unknown) {
+      console.error('buildChallengeTx error:', err);
       throw new AppError(400, 'CHALLENGE_BUILD_FAILED', 'Failed to generate SEP-10 challenge transaction', err);
     }
   }

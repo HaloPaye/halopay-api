@@ -27,19 +27,24 @@ jest.mock('ioredis', () => {
   return RedisMock;
 });
 
+import { Keypair } from '@stellar/stellar-sdk';
+
 describe('SEP-10 Rate Limiting Integration', () => {
   it('should return 429 Too Many Requests after 100 requests', async () => {
+    // Generate a valid random Stellar public key for the test
+    const clientAccount = Keypair.random().publicKey();
+
     // Send 100 successful requests
     for (let i = 0; i < 100; i++) {
       const res = await request(app)
-        .get('/api/v1/auth/challenge?account=GCXKG6RN4ONIEPCMNFB732A436Z5IGJUQYA8QW5FN6HP3SG6HQBQVAAK');
+        .get(`/api/v1/auth/challenge?account=${clientAccount}`);
       expect(res.status).toBe(200);
     }
 
     // 101st request should be rate limited
     const resLimited = await request(app)
-      .get('/api/v1/auth/challenge?account=GCXKG6RN4ONIEPCMNFB732A436Z5IGJUQYA8QW5FN6HP3SG6HQBQVAAK');
+      .get(`/api/v1/auth/challenge?account=${clientAccount}`);
     expect(resLimited.status).toBe(429);
-    expect(resLimited.body.message).toBe('Rate limit exceeded. Please try again later.');
+    expect(resLimited.body.error.message).toBe('Too many requests from this IP, please try again later.');
   });
 });
