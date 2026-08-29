@@ -16,14 +16,18 @@ const tokenSchema = z.object({
   })
 });
 
+import { slidingWindowRateLimiter } from '../middleware/rateLimit.js';
+
 export function createAuthRouter(authService: SEP10AuthService): Router {
   const router = Router();
+
+  const authLimiter = slidingWindowRateLimiter(60000, 100); // 100 requests per minute
 
   /**
    * GET /api/v1/auth/challenge
    * Initiates SEP-10 Web Authentication flow by generating a challenge transaction.
    */
-  router.get('/challenge', validate(challengeSchema), (req: Request, res: Response, next: NextFunction) => {
+  router.get('/challenge', authLimiter, validate(challengeSchema), (req: Request, res: Response, next: NextFunction) => {
     try {
       const account = req.query.account as string;
       const homeDomain = req.query.home_domain as string | undefined;
