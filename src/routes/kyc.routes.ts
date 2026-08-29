@@ -89,5 +89,36 @@ export function createKYCRouter(kycService: SEP12KYCService): Router {
     }
   });
 
+  /**
+   * POST /api/v1/kyc/webhook
+   * Async webhook callback for SEP-12 identity verification providers.
+   */
+  router.post('/webhook', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const signature = req.headers['x-kyc-signature'] as string;
+      const rawBody = JSON.stringify(req.body); // In a real app we'd use raw-body parser middleware, assuming express.json() for now
+
+      if (!kycService.verifyWebhookHMAC(rawBody, signature)) {
+        res.status(401).json({ error: 'Invalid HMAC signature' });
+        return;
+      }
+
+      const { customer_id, status, reason } = req.body;
+      if (!customer_id || !status) {
+        res.status(400).json({ error: 'Missing customer_id or status' });
+        return;
+      }
+
+      console.log(`[KYC Webhook] Customer ${customer_id} transitioned to status: ${status}. Reason: ${reason || 'none'}`);
+      
+      // Update database state machine logic goes here
+      // db.updateCustomerKYC(customer_id, status, reason);
+
+      res.status(200).json({ received: true });
+    } catch (err) {
+      next(err);
+    }
+  });
+
   return router;
 }
