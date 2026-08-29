@@ -6,13 +6,11 @@ import { SEP10ChallengeResponse, SEP10TokenResponse } from '../types/sep.js';
 export class SEP10AuthService {
   private readonly serverKeypair: Keypair;
   private readonly networkPassphrase: string;
-  private readonly jwtSecret: string;
   private readonly anchorDomain: string;
 
   constructor(
     serverSecretKey?: string,
     networkPassphrase = Networks.TESTNET,
-    jwtSecret = process.env.JWT_SECRET || 'halopay-default-secret-key-change-in-prod',
     anchorDomain = process.env.ANCHOR_DOMAIN || 'anchor.moneygram.com'
   ) {
     if (serverSecretKey) {
@@ -22,7 +20,6 @@ export class SEP10AuthService {
       this.serverKeypair = Keypair.random();
     }
     this.networkPassphrase = networkPassphrase;
-    this.jwtSecret = jwtSecret;
     this.anchorDomain = anchorDomain;
   }
 
