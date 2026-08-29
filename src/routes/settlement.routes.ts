@@ -49,8 +49,9 @@ export function createSettlementRouter(settlementService: SEP24SettlementService
     try {
       const authHeader = req.headers.authorization;
       const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : '';
+      const idempotencyKey = req.headers['idempotency-key'] as string;
 
-      const result = await settlementService.initiateWithdrawal(token, req.body);
+      const result = await settlementService.initiateWithdrawal(token, req.body, idempotencyKey);
       res.status(200).json(result);
     } catch (err) {
       next(err);
