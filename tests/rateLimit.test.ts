@@ -1,5 +1,7 @@
 import request from 'supertest';
-import app from '../src/app';
+import { createApp } from '../src/app';
+
+const app = createApp();
 
 // Note: ioredis needs to be mocked or a local redis instance must be running.
 // If redis is down, it fails open, so for a unit test, we should mock the redis client or the middleware.
