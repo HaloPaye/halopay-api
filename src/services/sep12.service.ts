@@ -1,5 +1,6 @@
 import { AppError } from '../middleware/error.middleware.js';
 import { SEP12CustomerPayload, SEP12GetCustomerResponse, SEP12PutCustomerResponse } from '../types/sep.js';
+import crypto from 'crypto';
 
 export interface MultipartFile {
   fieldname: string;
@@ -87,5 +88,18 @@ export class SEP12KYCService {
         id_number: { status: 'ACCEPTED' }
       }
     };
+  }
+
+  /**
+   * Verifies the HMAC signature of incoming KYC webhooks to prevent spoofing.
+   */
+  public verifyWebhookHMAC(rawBody: string, signature: string, secret: string = process.env.KYC_WEBHOOK_SECRET || 'default_secret'): boolean {
+    if (!signature || !rawBody) return false;
+    const expectedSignature = crypto.createHmac('sha256', secret).update(rawBody).digest('hex');
+    try {
+      return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
+    } catch {
+      return false; // In case of length mismatch
+    }
   }
 }
