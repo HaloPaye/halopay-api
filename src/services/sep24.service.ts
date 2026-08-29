@@ -3,9 +3,11 @@ import { SEP24QuoteRequest, SEP24QuoteResponse, SEP24WithdrawalRequest, SEP24Int
 
 export class SEP24SettlementService {
   private readonly anchorUrl: string;
+  private readonly idempotencyCache: Map<string, SEP24InteractiveResponse>;
 
   constructor(anchorUrl = process.env.ANCHOR_URL || 'https://anchor.moneygram.com') {
     this.anchorUrl = anchorUrl;
+    this.idempotencyCache = new Map();
   }
 
   public async getOffRampQuote(token: string, request: SEP24QuoteRequest): Promise<SEP24QuoteResponse> {
@@ -40,9 +42,14 @@ export class SEP24SettlementService {
     };
   }
 
-  public async initiateWithdrawal(token: string, request: SEP24WithdrawalRequest): Promise<SEP24InteractiveResponse> {
+  public async initiateWithdrawal(token: string, request: SEP24WithdrawalRequest, idempotencyKey?: string): Promise<SEP24InteractiveResponse> {
     if (!token) {
       throw new AppError(401, 'UNAUTHORIZED', 'Authentication token required for SEP-24 withdrawal');
+    }
+
+    if (idempotencyKey && this.idempotencyCache.has(idempotencyKey)) {
+      console.log(`[SEP-24] Returning cached response for idempotency key: ${idempotencyKey}`);
+      return this.idempotencyCache.get(idempotencyKey)!;
     }
 
     if (!request.account || !request.amount || !request.asset_code) {
@@ -58,11 +65,17 @@ export class SEP24SettlementService {
 
     console.log(`[SEP-24] Initiated interactive withdrawal. TxID: ${transactionId}`);
 
-    return {
+    const response: SEP24InteractiveResponse = {
       type: 'interactive_customer_info_needed',
       url: interactiveUrl,
       id: transactionId
     };
+
+    if (idempotencyKey) {
+      this.idempotencyCache.set(idempotencyKey, response);
+    }
+
+    return response;
   }
 
   public async processWebhook(payload: any): Promise<{ status: string }> {
