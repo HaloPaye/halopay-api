@@ -26,10 +26,19 @@ describe('Horizon Payment Listener & WebSocket Broadcaster', () => {
     };
 
     const event = listener.processPaymentRecord(rawRecord);
-    expect(event).toBeDefined();
-    expect(event.id).toBe('123456789');
-    expect(event.amount).toBe('25.0000000');
-    expect(event.asset_code).toBe('USDC');
+    expect(event).not.toBeNull();
+    expect(event!.id).toBe('123456789');
+    expect(event!.amount).toBe('25.0000000');
+    expect(event!.asset_code).toBe('USDC');
+  });
+
+  it('should gracefully handle malformed records by logging dead-letter error', () => {
+    const malformedRecord = {
+      id: '123',
+      // missing 'from', 'to', 'amount'
+    };
+    const event = listener.processPaymentRecord(malformedRecord);
+    expect(event).toBeNull();
   });
 
   it('should toggle Horizon stream listener status correctly and avoid double starting', () => {
