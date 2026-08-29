@@ -1,5 +1,5 @@
 import { Keypair, Networks, WebAuth } from '@stellar/stellar-sdk';
-import jwt from 'jsonwebtoken';
+import { AuthUtil } from '../utils/AuthUtil.js';
 import { AppError } from '../middleware/error.middleware.js';
 import { SEP10ChallengeResponse, SEP10TokenResponse } from '../types/sep.js';
 
@@ -78,15 +78,7 @@ export class SEP10AuthService {
       }
 
       const clientAccount = signers[0];
-      const token = jwt.sign(
-        {
-          iss: `https://${this.anchorDomain}/auth`,
-          sub: clientAccount,
-          iat: Math.floor(Date.now() / 1000),
-          exp: Math.floor(Date.now() / 1000) + 86400 // 24 hours
-        },
-        this.jwtSecret
-      );
+      const token = AuthUtil.generateSep10Token(clientAccount, this.anchorDomain);
 
       return { token };
     } catch (err: unknown) {
