@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger.js';
 import { Router, Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import { SEP12KYCService, MultipartFile } from '../services/sep12.service.js';
@@ -109,7 +110,7 @@ export function createKYCRouter(kycService: SEP12KYCService): Router {
         return;
       }
 
-      console.log(`[KYC Webhook] Customer ${customer_id} transitioned to status: ${status}. Reason: ${reason || 'none'}`);
+      logger.info(`[KYC Webhook] Customer ${customer_id} transitioned to status: ${status}. Reason: ${reason || 'none'}`);
       
       // Update database state machine logic goes here
       // db.updateCustomerKYC(customer_id, status, reason);

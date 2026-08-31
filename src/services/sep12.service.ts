@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger.js';
 import { AppError } from '../middleware/error.middleware.js';
 import { SEP12CustomerPayload, SEP12GetCustomerResponse, SEP12PutCustomerResponse } from '../types/sep.js';
 import crypto from 'crypto';
@@ -59,7 +60,7 @@ export class SEP12KYCService {
     // In a live environment, this constructs a FormData payload and performs a PUT request to the Anchor's /customer endpoint.
     // Here we perform strict validation, payload mapping, and return the compliant SEP-12 status.
     const mockAnchorCustomerId = `kyc_${Buffer.from(payload.account).toString('hex').substring(0, 12)}`;
-    console.log(`[SEP-12 KYC Service] Submitting KYC customer data to anchor (${this.anchorUrl}) with ${Object.keys(processedFiles).length} attachments`);
+    logger.info(`[SEP-12 KYC Service] Submitting KYC customer data to anchor (${this.anchorUrl}) with ${Object.keys(processedFiles).length} attachments`);
 
     return {
       id: mockAnchorCustomerId,

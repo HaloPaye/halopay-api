@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger.js';
 import { AppError } from '../middleware/error.middleware.js';
 import { SEP24QuoteRequest, SEP24QuoteResponse, SEP24WithdrawalRequest, SEP24InteractiveResponse } from '../types/sep.js';
 
@@ -48,7 +49,7 @@ export class SEP24SettlementService {
     }
 
     if (idempotencyKey && this.idempotencyCache.has(idempotencyKey)) {
-      console.log(`[SEP-24] Returning cached response for idempotency key: ${idempotencyKey}`);
+      logger.info(`[SEP-24] Returning cached response for idempotency key: ${idempotencyKey}`);
       return this.idempotencyCache.get(idempotencyKey)!;
     }
 
@@ -63,7 +64,7 @@ export class SEP24SettlementService {
     // Compliant SEP-24 Interactive URL formatting for MoneyGram
     const interactiveUrl = `${this.anchorUrl}/sep24/transactions/withdraw/interactive?transaction_id=${transactionId}&asset_code=${request.asset_code}&account=${request.account}&amount=${request.amount}&callback=${callbackUrl}`;
 
-    console.log(`[SEP-24] Initiated interactive withdrawal. TxID: ${transactionId}`);
+    logger.info(`[SEP-24] Initiated interactive withdrawal. TxID: ${transactionId}`);
 
     const response: SEP24InteractiveResponse = {
       type: 'interactive_customer_info_needed',
@@ -86,7 +87,7 @@ export class SEP24SettlementService {
     const txId = payload.transaction.id;
     const status = payload.transaction.status;
 
-    console.log(`[SEP-24 Webhook] Received status update for TxID ${txId}: ${status}`);
+    logger.info(`[SEP-24 Webhook] Received status update for TxID ${txId}: ${status}`);
 
     // Here we would normally update the database and notify the frontend via WebSockets
     return { status: 'acknowledged' };

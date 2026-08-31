@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger.js';
 import { Keypair, Networks, WebAuth } from '@stellar/stellar-sdk';
 import { AuthUtil } from '../utils/AuthUtil.js';
 import { AppError } from '../middleware/error.middleware.js';
@@ -43,7 +44,7 @@ export class SEP10AuthService {
         network_passphrase: this.networkPassphrase
       };
     } catch (err: unknown) {
-      console.error('buildChallengeTx error:', err);
+      logger.error('buildChallengeTx error:', err);
       throw new AppError(400, 'CHALLENGE_BUILD_FAILED', 'Failed to generate SEP-10 challenge transaction', err);
     }
   }

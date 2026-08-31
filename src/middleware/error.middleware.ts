@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger.js';
 import { Request, Response, NextFunction } from 'express';
 import { APIErrorResponse } from '../types/sep.js';
 
@@ -50,7 +51,7 @@ export function errorHandler(
   }
 
   // Fallback for unhandled unexpected errors
-  console.error('[Unhandled Internal Error]:', err);
+  logger.error('[Unhandled Internal Error]:', err);
   const fallbackBody: APIErrorResponse = {
     error: {
       code: 'INTERNAL_SERVER_ERROR',
