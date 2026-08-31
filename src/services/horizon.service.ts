@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger.js';
 import { HorizonPaymentEvent } from '../types/sep.js';
 import { PaymentWebSocketBroadcaster } from './websocket.service.js';
 
@@ -31,7 +32,7 @@ export class HorizonListenerService {
     }
 
     this.isListening = true;
-    console.log(`[Horizon Listener] Streaming on-chain payments for account: ${accountPublicKey}`);
+    logger.info(`[Horizon Listener] Streaming on-chain payments for account: ${accountPublicKey}`);
   }
 
   public processPaymentRecord(record: any): HorizonPaymentEvent | null {
@@ -57,14 +58,14 @@ export class HorizonListenerService {
 
       return paymentEvent;
     } catch (error) {
-      console.error('[Horizon Listener] Dead-letter transaction: schema validation failed', error);
+      logger.error('[Horizon Listener] Dead-letter transaction: schema validation failed', error);
       return null;
     }
   }
 
   public stopListening(): void {
     this.isListening = false;
-    console.log('[Horizon Listener] Payment stream stopped.');
+    logger.info('[Horizon Listener] Payment stream stopped.');
   }
 
   public getStatus(): boolean {

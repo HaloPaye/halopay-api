@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import hpp from 'hpp';
 import { errorHandler } from './middleware/error.middleware.js';
+import { loggerMiddleware } from './middleware/logger.middleware.js';
 import { SEP10AuthService } from './services/sep10.service.js';
 import { SEP12KYCService } from './services/sep12.service.js';
 import { SEP24SettlementService } from './services/sep24.service.js';
@@ -13,6 +14,9 @@ import { createSettlementRouter } from './routes/settlement.routes.js';
 
 export function createApp(): Express {
   const app = express();
+
+  // Logging and tracing
+  app.use(loggerMiddleware);
 
   // Security Middleware
   app.use(helmet());

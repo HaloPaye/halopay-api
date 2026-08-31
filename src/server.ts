@@ -1,3 +1,4 @@
+import { logger } from './utils/logger.js';
 import http from 'http';
 import dotenv from 'dotenv';
 import { createApp } from './app.js';
@@ -22,15 +23,15 @@ async function startServer() {
   try {
     await initDatabase();
   } catch (err) {
-    console.error('[DB] Failed to initialize database:', err);
+    logger.error('[DB] Failed to initialize database:', err);
     // Proceed anyway or process.exit(1), but we'll just log it for tests that might mock DB
   }
 
   horizonListener.startListening(MERCHANT_PUBKEY);
 
   server.listen(PORT, () => {
-    console.log(`[HaloPay API] Server running on http://localhost:${PORT}`);
-    console.log(`[HaloPay API] WebSocket endpoint active at ws://localhost:${PORT}/ws/payments`);
+    logger.info(`[HaloPay API] Server running on http://localhost:${PORT}`);
+    logger.info(`[HaloPay API] WebSocket endpoint active at ws://localhost:${PORT}/ws/payments`);
   });
 }
 
@@ -38,11 +39,11 @@ startServer();
 
 // Graceful shutdown hooks
 const shutdown = async () => {
-  console.log('[HaloPay API] Shutting down gracefully...');
+  logger.info('[HaloPay API] Shutting down gracefully...');
   server.close(async () => {
-    console.log('[HaloPay API] HTTP server closed.');
+    logger.info('[HaloPay API] HTTP server closed.');
     await dbPool.end();
-    console.log('[DB] Connection pool drained.');
+    logger.info('[DB] Connection pool drained.');
     process.exit(0);
   });
 };
