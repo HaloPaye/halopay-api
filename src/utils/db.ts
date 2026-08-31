@@ -1,3 +1,4 @@
+import { logger } from './logger.js';
 import { Pool } from 'pg';
 
 export const dbPool = new Pool({
@@ -21,7 +22,7 @@ export const initDatabase = async () => {
       CREATE INDEX IF NOT EXISTS idx_transactions_status_created_at 
       ON transactions (status, created_at);
     `);
-    console.log('[DB] Initialized transactions table and composite indexes.');
+    logger.info('[DB] Initialized transactions table and composite indexes.');
   } finally {
     client.release();
   }

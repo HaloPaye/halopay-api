@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger.js';
 import { WebSocketServer, WebSocket } from 'ws';
 import { Server } from 'http';
 import { HorizonPaymentEvent } from '../types/sep.js';
@@ -11,17 +12,17 @@ export class PaymentWebSocketBroadcaster {
 
     this.wss.on('connection', (ws: WebSocket) => {
       this.clients.add(ws);
-      console.log('[WebSocket] Merchant POS client connected. Active clients:', this.clients.size);
+      logger.info('[WebSocket] Merchant POS client connected. Active clients:', this.clients.size);
 
       ws.send(JSON.stringify({ event: 'CONNECTED', message: 'HaloPay Horizon Payment Listener active' }));
 
       ws.on('close', () => {
         this.clients.delete(ws);
-        console.log('[WebSocket] Merchant POS client disconnected. Remaining clients:', this.clients.size);
+        logger.info('[WebSocket] Merchant POS client disconnected. Remaining clients:', this.clients.size);
       });
 
       ws.on('error', (error: Error) => {
-        console.error('[WebSocket] Error on client connection:', error);
+        logger.error('[WebSocket] Error on client connection:', error);
       });
     });
   }

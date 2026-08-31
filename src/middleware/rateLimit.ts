@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger.js';
 import { Request, Response, NextFunction } from 'express';
 import Redis from 'ioredis';
 import { AppError } from './error.middleware.js';
@@ -9,7 +10,7 @@ const redisClient = new Redis(process.env.REDIS_URL || 'redis://127.0.0.1:6379',
 });
 
 redisClient.on('error', (err) => {
-  console.error('Redis connection error:', err);
+  logger.error('Redis connection error:', err);
 });
 
 /**
@@ -56,7 +57,7 @@ export function slidingWindowRateLimiter(windowMs: number, maxRequests: number) 
       if (err instanceof AppError) {
         return next(err);
       }
-      console.error('Rate limiter error, failing open', err);
+      logger.error('Rate limiter error, failing open', err);
       // Fail open if Redis is down
       next();
     }
