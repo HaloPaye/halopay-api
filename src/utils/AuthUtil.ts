@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { config } from '../config/index.js';
 
 // Generate an ephemeral RSA keypair for testing/dev if env vars are missing
 const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
@@ -8,8 +9,8 @@ const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
   privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
 });
 
-const PRIVATE_KEY = process.env.JWT_PRIVATE_KEY || privateKey;
-export const PUBLIC_KEY = process.env.JWT_PUBLIC_KEY || publicKey;
+const PRIVATE_KEY = config.JWT_PRIVATE_KEY || privateKey;
+export const PUBLIC_KEY = config.JWT_PUBLIC_KEY || publicKey;
 
 export interface Sep10JwtPayload {
   iss: string; // The URL of the authorization server

@@ -1,14 +1,12 @@
 import { logger } from './utils/logger.js';
 import http from 'http';
-import dotenv from 'dotenv';
+import { config } from './config/index.js';
 import { createApp } from './app.js';
 import { PaymentWebSocketBroadcaster } from './services/websocket.service.js';
 import { HorizonListenerService } from './services/horizon.service.js';
 import { dbPool, initDatabase } from './utils/db.js';
 
-dotenv.config();
-
-const PORT = process.env.PORT || 4000;
+const PORT = config.PORT;
 const app = createApp();
 const server = http.createServer(app);
 
@@ -17,7 +15,7 @@ const broadcaster = new PaymentWebSocketBroadcaster();
 broadcaster.initialize(server);
 
 const horizonListener = new HorizonListenerService(broadcaster);
-const MERCHANT_PUBKEY = process.env.MERCHANT_PUBLIC_KEY || 'GA7Q33B656F42D5G77XJSB62G4U74N5G3277Y88U337G3H2I2K3L4M5N';
+const MERCHANT_PUBKEY = config.MERCHANT_PUBLIC_KEY;
 
 async function startServer() {
   try {

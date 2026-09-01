@@ -1,10 +1,11 @@
 import { logger } from './logger.js';
 import { Pool } from 'pg';
+import { config } from '../config/index.js';
 
 export const dbPool = new Pool({
   max: 50,
   idleTimeoutMillis: 30000,
-  connectionString: process.env.DATABASE_URL || 'postgres://localhost:5432/halopay'
+  connectionString: config.DATABASE_URL
 });
 
 export const initDatabase = async () => {
