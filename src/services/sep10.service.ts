@@ -3,6 +3,7 @@ import { Keypair, Networks, WebAuth } from '@stellar/stellar-sdk';
 import { AuthUtil } from '../utils/AuthUtil.js';
 import { AppError } from '../middleware/error.middleware.js';
 import { SEP10ChallengeResponse, SEP10TokenResponse } from '../types/sep.js';
+import { config } from '../config/index.js';
 
 export class SEP10AuthService {
   private readonly serverKeypair: Keypair;
@@ -11,8 +12,8 @@ export class SEP10AuthService {
 
   constructor(
     serverSecretKey?: string,
-    networkPassphrase = Networks.TESTNET,
-    anchorDomain = process.env.ANCHOR_DOMAIN || 'anchor.moneygram.com'
+    networkPassphrase = config.STELLAR_NETWORK_PASSPHRASE || Networks.TESTNET,
+    anchorDomain = config.ANCHOR_DOMAIN
   ) {
     if (serverSecretKey) {
       this.serverKeypair = Keypair.fromSecret(serverSecretKey);

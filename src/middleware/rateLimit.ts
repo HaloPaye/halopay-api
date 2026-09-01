@@ -2,9 +2,10 @@ import { logger } from '../utils/logger.js';
 import { Request, Response, NextFunction } from 'express';
 import Redis from 'ioredis';
 import { AppError } from './error.middleware.js';
+import { config } from '../config/index.js';
 
 // Setup Redis Client
-const redisClient = new Redis(process.env.REDIS_URL || 'redis://127.0.0.1:6379', {
+const redisClient = new Redis(config.REDIS_URL, {
   lazyConnect: true,
   maxRetriesPerRequest: 0,
 });
