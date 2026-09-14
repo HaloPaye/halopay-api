@@ -6,10 +6,24 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/HaloPaye/halopay-api/actions"><img alt="CI/CD" src="https://img.shields.io/badge/build-passing-brightgreen"></a>
-  <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg">
-  <img alt="Stellar SDK" src="https://img.shields.io/badge/stellar--sdk-latest-purple">
+  <a href="https://stellar.org"><img alt="Stellar Ecosystem" src="https://img.shields.io/badge/Stellar-Ecosystem-000000?style=flat-square&logo=stellar&logoColor=white"></a>
+  <a href="https://soroban.stellar.org"><img alt="Soroban RPC" src="https://img.shields.io/badge/Soroban-RPC%20Ready-7928ca?style=flat-square&logo=rust&logoColor=white"></a>
+  <a href="https://github.com/HaloPaye/halopay-api/actions"><img alt="CI Status" src="https://img.shields.io/github/actions/workflow/status/HaloPaye/halopay-api/ci.yml?branch=main&style=flat-square&label=CI"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square"></a>
+  <img alt="Node 20+" src="https://img.shields.io/badge/Node-20%2B-green?style=flat-square&logo=node.js">
 </p>
+
+---
+
+## 🌌 Stellar & Soroban Architecture Integration
+
+HaloPay API implements the gold standard for Stellar Ecosystem Proposals (SEPs) and Soroban RPC settlement:
+
+* **SEP-10 (Web Authentication):** Cryptographically binds merchant sessions using challenge-transaction signatures verified against Stellar Horizon.
+* **SEP-12 (KYC Client API):** Manages merchant customer identity data collection and secure forwarding to licensed Stellar anchors.
+* **SEP-24 (Hosted Deposit & Withdrawal):** Orchestrates interactive fiat off-ramping flows with global anchors (e.g., MoneyGram), turning digital USDC revenue into local physical cash.
+* **SEP-38 (Anchor RFQ Quotes):** Provides programmatic access to real-time indicative and firm price quotes between stellar assets and fiat currencies.
+* **Soroban RPC & Horizon Stream Listeners:** Real-time event streaming of payment ledger entries, broadcasting instant cryptographic confirmation to offline POS terminals the moment internet connectivity is restored.
 
 ---
 
