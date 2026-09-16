@@ -4,3 +4,10 @@ dist/
 .env.local
 coverage/
 *.log
+userA.json
+userB.json
+payload.json
+protection.json
+.tmp*
+*.patch
+*.backup
